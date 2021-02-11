@@ -3,6 +3,7 @@ const app = express()
 const ThreeIdProvider = require('3id-did-provider').default
 const CeramicClient = require('@ceramicnetwork/http-client').default
 const { randomBytes } = require('@stablelib/random')
+const getRandomPlant = require('./plant-generator')
 
 let ceramic = undefined
 
@@ -26,14 +27,14 @@ async function setCeramic () {
 })()
 
 app.get('/', (req, res) => {
-    res.send('Hello World!')
+    res.send(getRandomPlant())
 })
 
 app.get('/new', async (req, res) => {
     try {
         const writeResult = await ceramic.createDocument('tile', {
             content: {
-                name: "Magus planta",
+                name: getRandomPlant(),
                 description: "An awesome WWF crypto plant",
                 image: "https://tenthousandsu.com/erc721/00050.png"
             },
