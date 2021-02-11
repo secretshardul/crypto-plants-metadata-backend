@@ -16,10 +16,15 @@ async function setCeramic () {
     const getPermission = async (request) => {
         return request.payload.paths
     }
-    const threeId = await ThreeIdProvider.create({ getPermission, seed })
-    const provider = threeId.getDidProvider()
-    await ceramic.setDIDProvider(provider)
-    return ceramic
+    try {
+        const threeId = await ThreeIdProvider.create({ getPermission, seed })
+        const provider = threeId.getDidProvider()
+        await ceramic.setDIDProvider(provider)
+        return ceramic
+    } catch (error) {
+        console.log('Failed to initialize ceramic')
+    }
+
 }
 
 (async () => {
@@ -30,9 +35,9 @@ app.get('/', (req, res) => {
     res.send(getRandomPlant())
 })
 
-app.get('/new', async (req, res) => {
+app.get('/newplant', async (req, res) => {
     try {
-        const writeResult = await ceramic.createDocument('tile', {
+        const document = await ceramic.createDocument('tile', {
             content: {
                 name: getRandomPlant(),
                 description: "An awesome WWF crypto plant",
@@ -40,25 +45,26 @@ app.get('/new', async (req, res) => {
             },
         })
 
-        console.log('Write result', writeResult)
-        console.log('Doc id', writeResult.id)
-        res.send('Created')
+        console.log('Write result', document)
+        console.log(document.id.toString())
+        res.send(document.id.toString())
     } catch (error) {
         console.log(error)
         res.send('Failed')
     }
-
 })
-app.get('/doc', async (req, res) => {
+
+app.get('/plant/:id', async (req, res) => {
     try {
-        const docResponse = await ceramic.loadDocument('kjzl6cwe1jw145elnqm1vzmyn8nnl8n174jedm4icsdy2zn628b7zvmo941zcz0')
+        const docResponse = await ceramic.loadDocument(req.params.id)
         console.log('doc', docResponse)
         console.log('doc body', docResponse._state.content)
+        res.send(docResponse._state.content)
 
     } catch (error) {
         console.log(error)
     }
-    res.send('Got doc')
+
 })
 const port = process.env.PORT || 3000
 app.listen(port, () => {
