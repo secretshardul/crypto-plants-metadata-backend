@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
+    "serve": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -18,6 +19,7 @@
   },
   "homepage": "https://github.com/secretshardul/crypto-plants-metadata-backend#readme",
   "dependencies": {
+    "@ceramicnetwork/http-client": "^0.9.6",
     "express": "^4.17.1"
   },
   "devDependencies": {
