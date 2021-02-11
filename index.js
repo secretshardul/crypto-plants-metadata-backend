@@ -1,12 +1,30 @@
 const express = require('express')
 const app = express()
-// import CeramicClient from '@ceramicnetwork/http-client'
+const ThreeIdProvider = require('3id-did-provider').default
 const CeramicClient = require('@ceramicnetwork/http-client').default
-// import * as CeramicClient from '@ceramicnetwork/http-client'
+const { randomBytes } = require('@stablelib/random')
 
-const CERAMIC_URL = 'https://ceramic-clay.3boxlabs.com'
-// const CERAMIC_URL = 'http://localhost:7007'
-const ceramic = new CeramicClient(CERAMIC_URL)
+let ceramic = undefined
+
+async function setCeramic () {
+    const CERAMIC_URL = 'https://ceramic-clay.3boxlabs.com'
+    // const CERAMIC_URL = 'http://localhost:7007'
+    const ceramic = new CeramicClient(CERAMIC_URL)
+
+    const seed = randomBytes(32)
+    const getPermission = async (request) => {
+        return request.payload.paths
+    }
+    const threeId = await ThreeIdProvider.create({ getPermission, seed })
+    const provider = threeId.getDidProvider()
+    await ceramic.setDIDProvider(provider)
+    return ceramic
+}
+
+
+(async () => {
+    ceramic = await setCeramic()
+})()
 
 app.get('/', (req, res) => {
     res.send('Hello World!')
@@ -14,7 +32,6 @@ app.get('/', (req, res) => {
 
 app.get('/doc', async (req, res) => {
     try {
-        // const docResponse = await ceramic.loadDocument('k2t6wyfsu4pg2qvoorchoj23e8hf3eiis4w7bucllxkmlk91sjgluuag5syphl')
         const docResponse = await ceramic.loadDocument('kjzl6cwe1jw145elnqm1vzmyn8nnl8n174jedm4icsdy2zn628b7zvmo941zcz0')
         console.log('doc', docResponse)
         console.log('doc body', docResponse._state.content)
