@@ -17,7 +17,7 @@ async function setCeramic () {
         return request.payload.paths
     }
     try {
-        const threeId = await ThreeIdProvider.create({ getPermission, seed })
+        const threeId = await ThreeIdProvider.create({ getPermission, seed, ceramic })
         const provider = threeId.getDidProvider()
         await ceramic.setDIDProvider(provider)
         return ceramic
