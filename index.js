@@ -49,8 +49,9 @@ app.get('/newplant', async (req, res) => {
 
         console.log('Write result', document)
         const docId = document.id.toString()
+        console.log('New doc ID', docId)
         plantDb.push(docId)
-        res.send(docId)
+        res.send(plantDb.length - 1)
     } catch (error) {
         console.log(error)
         res.send('Failed')
