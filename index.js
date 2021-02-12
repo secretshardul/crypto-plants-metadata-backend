@@ -4,6 +4,7 @@ const ThreeIdProvider = require('3id-did-provider').default
 const CeramicClient = require('@ceramicnetwork/http-client').default
 const { randomBytes } = require('@stablelib/random')
 const getRandomPlant = require('./plant-generator')
+const getRandomImage = require('./plant-images')
 
 let ceramic = undefined
 
@@ -41,7 +42,7 @@ app.get('/newplant', async (req, res) => {
             content: {
                 name: getRandomPlant(),
                 description: "An awesome WWF crypto plant",
-                image: "https://tenthousandsu.com/erc721/00050.png"
+                image: getRandomImage()
             },
         })
 
