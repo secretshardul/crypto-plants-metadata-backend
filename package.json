@@ -22,6 +22,7 @@
     "3id-did-provider": "^0.5.1",
     "@ceramicnetwork/http-client": "^0.9.6",
     "@stablelib/random": "^1.0.0",
+    "cors": "^2.8.5",
     "express": "^4.17.1"
   },
   "devDependencies": {

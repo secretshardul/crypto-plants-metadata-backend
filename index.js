@@ -1,5 +1,5 @@
 const express = require('express')
-const app = express()
+const cors = require('cors')
 const ThreeIdProvider = require('3id-did-provider').default
 const CeramicClient = require('@ceramicnetwork/http-client').default
 const { randomBytes } = require('@stablelib/random')
@@ -32,6 +32,8 @@ async function setCeramic () {
     ceramic = await setCeramic()
 })()
 
+const app = express()
+app.use(cors())
 app.get('/', (req, res) => {
     res.send(getRandomPlant())
 })
@@ -67,7 +69,7 @@ app.get('/plant/:id', async (req, res) => {
     }
 
 })
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 5000
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
 })
