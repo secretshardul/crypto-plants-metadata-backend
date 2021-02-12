@@ -3,8 +3,7 @@ const cors = require('cors')
 const ThreeIdProvider = require('3id-did-provider').default
 const CeramicClient = require('@ceramicnetwork/http-client').default
 const { randomBytes } = require('@stablelib/random')
-const getRandomPlant = require('./plant-generator')
-const getRandomImage = require('./plant-images')
+const { getRandomPlant, getPlantDescription, getRandomImage } = require('./plant-generator')
 
 let ceramic = undefined
 
@@ -43,7 +42,7 @@ app.get('/newplant', async (req, res) => {
         const document = await ceramic.createDocument('tile', {
             content: {
                 name: getRandomPlant(),
-                description: "An awesome WWF crypto plant",
+                description: getPlantDescription(),
                 image: getRandomImage()
             },
         })
