@@ -4,12 +4,12 @@ const ThreeIdProvider = require('3id-did-provider').default
 const CeramicClient = require('@ceramicnetwork/http-client').default
 const { randomBytes } = require('@stablelib/random')
 const { getRandomPlant, getPlantDescription, getRandomImage } = require('./plant-generator')
+const plantDb = require('./plantDatabase')
 
 let ceramic = undefined
 
 async function setCeramic () {
     const CERAMIC_URL = 'https://ceramic-clay.3boxlabs.com'
-    // const CERAMIC_URL = 'http://localhost:7007'
     const ceramic = new CeramicClient(CERAMIC_URL)
 
     const seed = randomBytes(32)
@@ -48,17 +48,19 @@ app.get('/newplant', async (req, res) => {
         })
 
         console.log('Write result', document)
-        console.log(document.id.toString())
-        res.send(document.id.toString())
+        const docId = document.id.toString()
+        plantDb.push(docId)
+        res.send(docId)
     } catch (error) {
         console.log(error)
         res.send('Failed')
     }
 })
 
-app.get('/plant/:id', async (req, res) => {
+app.get('/plant/:tokenId', async (req, res) => {
     try {
-        const docResponse = await ceramic.loadDocument(req.params.id)
+        const plantId = plantDb[req.params.tokenId]
+        const docResponse = await ceramic.loadDocument(plantId)
         console.log('doc', docResponse)
         console.log('doc body', docResponse._state.content)
         res.send(docResponse._state.content)
